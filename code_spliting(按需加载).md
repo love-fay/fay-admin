@@ -1,6 +1,8 @@
-> 写这篇文章之时，是我将自己的一个大型项目中的一部分从纯react改造成结合redux和react-router4,并实现了按需加载，也就是code spliting，在国内论坛上很少讲到code spliting，有可能是大家都去看了redux的作者Dan Abramov在GitHub上写了关于redux code spliting的伪代码：
+> 写这篇文章之时，是我将自己的一个大型项目中的一部分从纯react改造成结合redux和react-router4,并实现了按需加载，也就是code spliting，在国内论坛上很少讲到code spliting，可以说我这是完整介绍的第一篇~有可能是大家都去看了redux的作者Dan Abramov在GitHub上写了关于redux code spliting的伪代码，然后默默实现了。
 (不得不说，Dan Abramov长得很帅！)
 [GitHub上的伪代码](https://gist.github.com/gaearon/0a2213881b5d53973514)
+***使用react和redux最合理的设计就是SPA，然后全局有且仅有一个Store！***
+这部分伪代码我也粘贴过来了：
 
 reducers.js
 ```
@@ -328,7 +330,7 @@ import {reducer as unAssignUserReducer, sagas as unAssignUserSagas} from '../unA
 ## 
 ![这里写图片描述](http://img.blog.csdn.net/20171027093241304?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZmF5NDYyMjk4MzIy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
 ## 
-> 这里一定要定义contextTypes，不然获取不到this.context，当然官方没有提供这个api，也不推荐使用，但是按需加载就得需要它，并且我们要谨慎使用它即可，因为this.context一旦改变，它关联的上下文就会重新render，所以加载角色管理页面的时候，把它所要使用到的reducer和sagas也都关联进去，这样在使用auth组件的时候就已经存在相关的reducer和sagas，不需要再改变上下文的store了。当然组件设计很重要，如果不合理会导致页面不可控。这里基本就将code spliting介绍完了。
+> 这里一定要定义contextTypes，不然获取不到this.context，当然官方没有提供这个api，也不推荐使用，但是按需加载就得需要它，并且我们要谨慎使用它即可，因为this.context一旦改变，它关联的上下文就会重新render，所以加载角色管理页面的时候，把它所要使用到的reducer和sagas也都关联进去，这样在使用auth组件的时候就已经存在相关的reducer和sagas，不需要再改变上下文的store了。我并没有去分析源码，但是实现证明，路由组件<Route/>里返回的react组件中的this.context并不会影响它外层的，说白了，就是Route里的上下文context只是它自己的。还有组件设计很重要，如果不合理会导致页面不可控。这里基本就将code spliting介绍完了。
 ## 
 > 这里补充下关于组件设计，使用reactjs的时候组件设计一定要足够的扁平化，也就是平级，这样就很少出现父组件中嵌套子组件，而父组件更新的时候，子组件也跟着更新，实际上子组件并不想更新。当然遇到逼不得已嵌套的情况的时候，可以使用shouldComponentUpdate这个组件存在时期的生命周期来控制子组件是否render。
 
